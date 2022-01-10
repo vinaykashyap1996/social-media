@@ -1,4 +1,3 @@
-const post = require("../../Models/post");
 const PostModel = require("../../Models/post");
 const checkauth = require("../../Utils/check-auth");
 
@@ -36,6 +35,9 @@ module.exports = {
         createdAt: new Date().toISOString(),
       });
       const Post = await newPost.save();
+      context.pubsub.publish("NEW_POST", {
+        newPost: Post,
+      });
       return Post;
     },
 
@@ -52,6 +54,11 @@ module.exports = {
       } catch (error) {
         throw new Error(error);
       }
+    },
+  },
+  Subscription: {
+    newPost: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator(["NEW_POST"]),
     },
   },
 };
