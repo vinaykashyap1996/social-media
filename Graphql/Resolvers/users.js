@@ -5,7 +5,7 @@ require("dotenv").config();
 
 module.exports = {
   Mutation: {
-    login: async (_, { username, password }) => {
+    async login(_, { username, password }) {
       const user = await usersModel.findOne({ username: username });
       if (!user) {
         throw new Error("username does not exist");
@@ -15,8 +15,8 @@ module.exports = {
         throw new Error("Passwords do not match");
       }
       const token = jwt.sign(
-        { userId: user.id, email: user.email },
-        "dndkasdjasbdhabdbsaidbaubd12182u38udbaskbdasbduassduasbduab",
+        { userId: user.id, email: user.email, username: user.username },
+        process.env.Secret_key,
         {
           expiresIn: "1h",
         }
@@ -26,6 +26,7 @@ module.exports = {
         token,
         username: user.username,
         email: user.email,
+        createdAt: user.createdAt,
       };
     },
     createUser: (_, args) => {
@@ -58,7 +59,7 @@ module.exports = {
                   email: result.email,
                   username: result.username,
                 },
-                "dndkasdjasbdhabdbsaidbaubd12182u38udbaskbdasbduassduasbduab",
+                process.env.Secret_key,
                 { expiresIn: "1h" }
               );
               return { ...result._doc, _id: result.id, token };
