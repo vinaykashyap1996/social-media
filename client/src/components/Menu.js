@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Menu } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/contextAuth";
+
 export default function Menubar() {
+  const { user, logout } = useContext(AuthContext);
   const pathname = window.location.pathname;
   const path = pathname === "/" ? "home" : pathname.substring(1);
-  console.log(path);
   const [activeItem, setActiveItem] = useState(path);
   const handleItemClick = (e, { name }) => setActiveItem(name);
-  return (
+  const MenuBar = user ? (
+    <Menu pointing secondary size="massive" color="teal">
+      <Menu.Item
+        name={user.username}
+        active={activeItem === "home"}
+        onClick={handleItemClick}
+        as={Link}
+        to="/"
+      />
+
+      <Menu.Menu position="right">
+        <Menu.Item
+          name="logout"
+          active={activeItem === "logout"}
+          onClick={logout}
+        />
+      </Menu.Menu>
+    </Menu>
+  ) : (
     <Menu pointing secondary size="massive" color="teal">
       <Menu.Item
         name="home"
@@ -32,12 +52,8 @@ export default function Menubar() {
           as={Link}
           to="/register"
         />
-        <Menu.Item
-          name="logout"
-          active={activeItem === "logout"}
-          onClick={handleItemClick}
-        />
       </Menu.Menu>
     </Menu>
   );
+  return MenuBar;
 }
