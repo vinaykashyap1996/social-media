@@ -5,7 +5,6 @@ import { Grid } from "semantic-ui-react";
 import Postcard from "../components/Postcard";
 function Home() {
   const { loading, data } = useQuery(FETCH_POST);
-  console.log(data);
   return (
     <Grid columns={3} divided>
       <Grid.Row className="page-title">
