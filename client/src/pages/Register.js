@@ -27,7 +27,6 @@ function Register(props) {
       history("/");
     },
     onError(err) {
-      console.log(err.graphQLErrors[0].message);
       setErrors(err.graphQLErrors[0].message);
     },
     variables: values,
@@ -81,13 +80,13 @@ function Register(props) {
           Register
         </Button>
       </Form>
-      {Object.keys(errors).length > 0 && (
+      {/* {errors && (
         <div className="ui error message">
           <ul className="list">
             <li>{errors}</li>
           </ul>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
