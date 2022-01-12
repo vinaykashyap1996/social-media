@@ -56,13 +56,13 @@ function Login() {
           Login
         </Button>
       </Form>
-      {Object.keys(errors).length > 0 && (
+      {/* {errors && (
         <div className="ui error message">
           <ul className="list">
-            <li key={errors}>{errors}</li>
+            <li>{errors}</li>
           </ul>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

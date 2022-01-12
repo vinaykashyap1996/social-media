@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Card, Image, Icon, Label } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import moment from "moment";
-export default function Postcard({
+import { AuthContext } from "../context/contextAuth";
+import Like from "../components/Like";
+import DeletePost from "./deletePost";
+function Postcard({
   post: {
     body,
     createdAt,
-    id,
+    _id,
     username,
     likes,
     likeCount,
@@ -14,12 +17,14 @@ export default function Postcard({
     comments,
   },
 }) {
-  function likePost() {
-    console.log("liked");
-  }
   function commentPost() {
     console.log("commented");
   }
+  function ondelete() {
+    console.log("deleted");
+  }
+  const { user } = useContext(AuthContext);
+
   return (
     <Card fluid>
       <Card.Content>
@@ -29,21 +34,14 @@ export default function Postcard({
           src="https://react.semantic-ui.com/images/avatar/large/molly.png"
         />
         <Card.Header>{username}</Card.Header>
-        <Card.Meta as={Link} to={`/posts/${id}`}>
+        <Card.Meta as={Link} to={`/posts/${_id}`}>
           {moment(createdAt).fromNow(true)}
         </Card.Meta>
         <Card.Description>{body}</Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <Button as="div" labelPosition="right" onClick={likePost}>
-          <Button color="teal" basic>
-            <Icon name="heart" />
-          </Button>
-          <Label basic color="teal" pointing="left">
-            {likeCount}
-          </Label>
-        </Button>
-        <Button as="div" labelPosition="right" onClick={commentPost}>
+        <Like user={user} post={{ _id, likes, likeCount }} />
+        <Button labelPosition="right" as={Link} to={`/posts/${_id}`}>
           <Button color="blue" basic>
             <Icon name="comments" />
           </Button>
@@ -51,7 +49,10 @@ export default function Postcard({
             {commentCount}
           </Label>
         </Button>
+        {user && user.username === username && <DeletePost postId={_id} />}
       </Card.Content>
     </Card>
   );
 }
+
+export default Postcard;
