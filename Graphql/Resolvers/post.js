@@ -5,7 +5,7 @@ module.exports = {
   Query: {
     async getposts() {
       try {
-        const posts = await PostModel.find();
+        const posts = await PostModel.find().sort({ createdAt: -1 });
         return posts;
       } catch (error) {
         throw new Error(error);
@@ -27,7 +27,9 @@ module.exports = {
   Mutation: {
     async createPost(_, { body }, context) {
       const user = checkauth(context);
-
+      if (body.trim() === "") {
+        throw new Error("Body cannot be empty");
+      }
       const newPost = new PostModel({
         body,
         user: user.id,

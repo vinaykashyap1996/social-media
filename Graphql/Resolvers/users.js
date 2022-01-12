@@ -2,13 +2,14 @@ const usersModel = require("../../Models/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const { UserInputError } = require("apollo-server");
 
 module.exports = {
   Mutation: {
     async login(_, { username, password }) {
       const user = await usersModel.findOne({ username: username });
       if (!user) {
-        throw new Error("username does not exist");
+        throw new UserInputError("username does not exist");
       }
       const isMatched = await bcrypt.compare(password, user.password);
       if (!isMatched) {
@@ -30,6 +31,15 @@ module.exports = {
       };
     },
     createUser: (_, args) => {
+      if (args.registerInput.username.trim() === " ") {
+        throw new UserInputError("Username must not be empty");
+      }
+      if (args.registerInput.password.trim() === " ") {
+        throw new UserInputError("Password must not be empty");
+      }
+      if (args.registerInput.email.trim() === " ") {
+        throw new UserInputError("Email must not be empty");
+      }
       return usersModel
         .findOne({ email: args.registerInput.email })
         .then((user) => {
